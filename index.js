@@ -22,7 +22,6 @@ const bcrypt = require('bcryptjs');
 
 // Internal Routes
 const authRouter = require('./routes/auth.js');
-const videoRouter = require('./routes/videoRoutes.js');
 const puterVideoGenerator = require('./routes/mk.js');
 
 // ✅ VERCEL: Use os.tmpdir() for temp files (/tmp on Vercel)
@@ -36,7 +35,6 @@ const DB = process.env.MONGO_URI;
 // Middleware
 app.use(express.json());
 app.use(authRouter);
-app.use(videoRouter);
 app.use('/puter-video', puterVideoGenerator);
 app.use("/assets", express.static("assets"));
 
