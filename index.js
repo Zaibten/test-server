@@ -22,6 +22,7 @@ const bcrypt = require('bcryptjs');
 
 // Internal Routes
 const authRouter = require('./routes/auth.js');
+const videoRouter = require('./routes/videoRoutes.js');
 const puterVideoGenerator = require('./routes/mk.js');
 
 // ✅ VERCEL: Use os.tmpdir() for temp files (/tmp on Vercel)
@@ -35,30 +36,39 @@ const DB = process.env.MONGO_URI;
 // Middleware
 app.use(express.json());
 app.use(authRouter);
+app.use(videoRouter);
 app.use('/puter-video', puterVideoGenerator);
 app.use("/assets", express.static("assets"));
 
 // ✅ VERCEL: Lazy MongoDB connection (serverless-safe)
 let isConnected = false;
 const connectDB = async () => {
-  if (isConnected) return;
+  if (isConnected && mongoose.connection.readyState === 1) return;
   try {
     await mongoose.connect(DB, {
-      serverSelectionTimeoutMS: 5000,
-      bufferCommands: false,
+      serverSelectionTimeoutMS: 10000,
     });
     isConnected = true;
     console.log('MongoDB connection successful');
   } catch (e) {
+    isConnected = false;
     console.log("MongoDB Error:", e);
     throw e;
   }
 };
 
-connectDB().catch(console.error);
-
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
+
+// ✅ VERCEL: Middleware to ensure DB is connected before every request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (e) {
+    res.status(500).json({ error: "Database connection failed. Please try again." });
+  }
+});
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -69,7 +79,6 @@ cloudinary.config({
 // -------------------- Reset Password --------------------
 app.post('/reset-password', async (req, res) => {
   try {
-    await connectDB();
     const { email, newPassword } = req.body;
     if (!email || !newPassword) {
       return res.status(400).json({ success: false, error: "Email and new password are required" });
@@ -91,7 +100,6 @@ app.post('/reset-password', async (req, res) => {
 // -------------------- Profile Route --------------------
 app.post('/profile', async (req, res) => {
   try {
-    await connectDB();
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: "Email is required" });
 
