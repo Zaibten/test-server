@@ -1,0 +1,9 @@
+file 'E:\Story Teller Mobile Application\story_teller\server\temp\video_img_1777529163075_0.png'
+duration 12.24
+file 'E:\Story Teller Mobile Application\story_teller\server\temp\video_img_1777529163974_1.png'
+duration 12.24
+file 'E:\Story Teller Mobile Application\story_teller\server\temp\video_img_1777529164616_2.png'
+duration 12.24
+file 'E:\Story Teller Mobile Application\story_teller\server\temp\video_img_1777529165197_3.png'
+duration 12.24
+file 'E:\Story Teller Mobile Application\story_teller\server\temp\video_img_1777529165197_3.png'
