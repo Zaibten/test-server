@@ -20,7 +20,6 @@ const bcrypt     = require('bcryptjs');
 
 // ── Internal routes ──────────────────────────────────────────────
 const authRouter  = require('./routes/auth.js');
-const videoRouter = require('./routes/videoRoutes.js');
 
 // ── App init ─────────────────────────────────────────────────────
 const app  = express();
@@ -31,7 +30,6 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(authRouter);
-app.use(videoRouter);
 app.use('/assets', express.static('assets'));
 
 // ── MongoDB ──────────────────────────────────────────────────────
